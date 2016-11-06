@@ -34,7 +34,7 @@ task printClasspath {
 }
 
 archivesBaseName = "chaincode"
-mainClassName="me.phyrextsai.hyperledger.CrowdFunding"
+mainClassName="me.phyrextsai.hyperledger.crowdfunding.CrowdFunding"
 
 run {
     if (project.hasProperty("appArgs")) {

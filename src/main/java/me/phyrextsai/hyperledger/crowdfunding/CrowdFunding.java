@@ -13,17 +13,18 @@ public class CrowdFunding extends ChaincodeBase {
     public String run(ChaincodeStub stub, String function, String[] args) {
         log.info("run, function:" + function);
         switch (function) {
+            case "create":
+                // TODO: create a crowd funding
+                log.info("create");
+                break;
             case "funding":
-                // TODO add money in it
-                for (int i = 0; i < args.length; i += 2)
-                    stub.putState(args[i], args[i + 1]);
+                // TODO: add money in one of the crowd funding
+                log.info("funding");
                 break;
             case "hello":
+                // Just print out hello
                 System.out.println("hello invoked");
                 log.info("hello invoked");
-                break;
-            default:
-                log.info("This is a crowd funding contract! Please select a function.");
                 break;
         }
         log.error("No matching case for function:"+function);
@@ -32,8 +33,9 @@ public class CrowdFunding extends ChaincodeBase {
 
     @Override
     public String query(ChaincodeStub stub, String function, String[] args) {
+        // TODO: show personal crowd funding details, personal creating, personal funding.
         log.info("query, function:" + function);
-        return null;
+        return "Welcome crowd funding";
     }
 
     @Override
