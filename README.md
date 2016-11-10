@@ -1,6 +1,17 @@
 # hyperledger-cloudfounding
 
-## Environment setting
+## Docker images
+
+```
+-- clone docker repo
+git clone https://github.com/PhyrexTsai/hyperledger-docker
+
+-- build with docker on your local
+cd {PATH}/hyperledger-docker
+docker-compose up
+```
+
+## Environment setting in Docker
 
 ```
 -- install gradle
@@ -17,7 +28,7 @@ add-apt-repository -y ppa:webupd8team/java && \
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 ```
 
-## git clone to docker
+## Copy repo into Docker
 
 ```
 git clone https://github.com/PhyrexTsai/hyperledger-cloudfounding
