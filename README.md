@@ -1,4 +1,4 @@
-# hyperledger-cloudfounding
+# hyperledger-crowdfounding
 
 ## Docker images
 
@@ -31,7 +31,7 @@ export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 ## Copy repo into Docker
 
 ```
-git clone https://github.com/PhyrexTsai/hyperledger-cloudfounding
+git clone https://github.com/PhyrexTsai/hyperledger-crowdfounding
 ```
 
 ## Build shim-client
@@ -44,7 +44,7 @@ cd /opt/gopath/src/github.com/hyperledger/fabric
 ## Run on docker
 
 ```
-cd {PATH}/hyperledger-cloudfounding
+cd {PATH}/hyperledger-crowdfounding
 gradle -b build.gradle clean
 gradle -b build.gradle build
 gradle -b build.gradle run
@@ -58,9 +58,9 @@ peer network login jim
 6avZQLwcUe9b
 
 -- chaincode command 
-peer chaincode deploy -u jim -l java -n hello -c '{"Function":"init","Args":[]}'
-peer chaincode query -u jim -l java -n hello -c '{"Function":"put","Args":["Me"]}'
-peer chaincode invoke -u jim -l java -n hello -c '{"Function":"hello","Args":[""]}'
-peer chaincode invoke -u jim -n hello -c '{"Function":"put","Args":["hey","me"]}'
-peer chaincode query -u jim -n hello -c '{"Function":"put","Args":["hey"]}'
+peer chaincode deploy -u jim -l java -n CrowdFunding -c '{"Function":"init","Args":[]}'
+#peer chaincode query -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["Me"]}'
+peer chaincode invoke -u jim -l java -n CrowdFunding -c '{"Function":"hello","Args":[""]}'
+#peer chaincode invoke -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["hey","me"]}'
+#peer chaincode query -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["hey"]}'
 ```
