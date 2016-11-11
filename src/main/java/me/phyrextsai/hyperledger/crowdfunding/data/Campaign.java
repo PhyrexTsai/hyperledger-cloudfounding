@@ -24,6 +24,8 @@ public class Campaign implements Table<Campaign> {
     private String info;
     private Integer fundingAmount;
 
+    public Campaign() {}
+
     public Campaign(String campaignId, String owner, String info, Integer fundingAmount) {
         this.setCampaignId(campaignId);
         this.setOwner(owner);

@@ -14,6 +14,14 @@ public class CrowdFunding extends ChaincodeBase {
     public String run(ChaincodeStub stub, String function, String[] args) {
         log.info("run, function:" + function);
         switch (function) {
+            case "init":
+                log.info("init");
+
+                /**
+                 * 創建 table schema
+                 */
+                CampaignUtils.getInstance(stub).init(args);
+                break;
             case "campaign":
                 // TODO: create a crowd funding
                 log.info("campaign");
@@ -25,7 +33,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * owner (wallet address)
                  * fundingGoal
                  */
-                CampaignUtils.getInstance(stub).initCampaign(args);
+                CampaignUtils.getInstance(stub).createCampaign(args);
                 break;
             case "contribute":
                 // TODO: add money in one of the crowd funding

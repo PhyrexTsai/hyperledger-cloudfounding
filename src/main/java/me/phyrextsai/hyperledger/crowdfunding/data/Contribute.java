@@ -26,6 +26,8 @@ public class Contribute implements Table<Contribute> {
     private Integer amount;
     private Boolean refund = false;
 
+    public Contribute() {}
+
     public Contribute(String contributeId, String campaignId, String contributor, String beneficiary, Integer amount, Boolean refund) {
         this.setContributeId(contributeId);
         this.setCampaignId(campaignId);

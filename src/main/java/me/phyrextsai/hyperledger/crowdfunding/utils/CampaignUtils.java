@@ -31,20 +31,31 @@ public class CampaignUtils {
         return instance;
     }
 
-    public String initCampaign(String[] args) {
+    public String init(String[] args) {
+        Campaign campaign = new Campaign();
+        boolean campaignCreateSuccess = campaign.create(stub);
+        if (campaignCreateSuccess) {
+            System.out.println(String.format("Create table [%s]", Campaign.CAMPAIGN));
+        } else {
+            System.out.println(String.format("Table [Campaign] exist", Campaign.CAMPAIGN));
+        }
+        Contribute contribute = new Contribute();
+        boolean contributeCreateSuccess = contribute.create(stub);
+        if (contributeCreateSuccess) {
+            System.out.println(String.format("Create table [%s]", Contribute.CONTRIBUTE));
+        } else {
+            System.out.println(String.format("Table [Campaign] exist", Contribute.CONTRIBUTE));
+        }
+        return null;
+    }
+
+    public String createCampaign(String[] args) {
         try {
             String campaignId = stub.getUuid();
             String address = args[0];
             String info = args[1];
             Integer fundingAmount = Integer.parseInt(args[2]);
             Campaign campaign = new Campaign(campaignId, address, info, fundingAmount);
-
-            boolean createSuccess = campaign.create(stub);
-            if (createSuccess) {
-                System.out.println(String.format("Create table [%s]", Campaign.CAMPAIGN));
-            } else {
-                System.out.println(String.format("Table [Campaign] exist", Campaign.CAMPAIGN));
-            }
 
             if (campaign.insert(stub, campaign)) {
                 return "{\"Data\":\"Create Campaign success.\"}";
@@ -64,13 +75,6 @@ public class CampaignUtils {
             String beneficiary = args[2];
             Integer amount = Integer.parseInt(args[3]);
             Contribute contribute = new Contribute(contributeId, campaignId, contributor, beneficiary, amount, false);
-
-            boolean createSuccess = contribute.create(stub);
-            if (createSuccess) {
-                System.out.println(String.format("Create table [%s]", Contribute.CONTRIBUTE));
-            } else {
-                System.out.println(String.format("Table [Campaign] exist", Contribute.CONTRIBUTE));
-            }
 
             if (contribute.insert(stub, contribute)) {
                 return "{\"Data\":\"Create Contribute success.\"}";
