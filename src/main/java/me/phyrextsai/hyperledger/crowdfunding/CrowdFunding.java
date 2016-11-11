@@ -1,5 +1,6 @@
 package me.phyrextsai.hyperledger.crowdfunding;
 
+import me.phyrextsai.hyperledger.crowdfunding.utils.CampaignUtils;
 import org.hyperledger.java.shim.ChaincodeBase;
 import org.hyperledger.java.shim.ChaincodeStub;
 import org.apache.commons.logging.Log;
@@ -13,21 +14,59 @@ public class CrowdFunding extends ChaincodeBase {
     public String run(ChaincodeStub stub, String function, String[] args) {
         log.info("run, function:" + function);
         switch (function) {
-            case "create":
+            case "campaign":
                 // TODO: create a crowd funding
-                log.info("create");
+                log.info("campaign");
+
+                /**
+                 * 建立 campaign，owner 是需要收錢的人的地址
+                 *
+                 * campaign
+                 * owner (wallet address)
+                 * fundingGoal
+                 */
+                CampaignUtils.getInstance(stub).initCampaign(args);
                 break;
-            case "funding":
+            case "contribute":
                 // TODO: add money in one of the crowd funding
-                log.info("funding");
+                log.info("contribute");
+
+                /**
+                 * 貢獻到此眾籌，transfer money from campaign owner's wallet address
+                 *
+                 * campaign
+                 * contributor
+                 * amount
+                 */
+                CampaignUtils.getInstance(stub).doContribute(args);
                 break;
-            case "hello":
-                // Just print out hello
-                System.out.println("hello invoked");
-                log.info("hello invoked");
+            case "refund":
+                log.info("refund");
+
+                /**
+                 * 退款給單一個人，transfer from campaign owner's wallet address to contributor
+                 *
+                 * campaign
+                 * contributor
+                 * refund
+                 */
+                CampaignUtils.getInstance(stub).doRefund(args);
                 break;
+            case "payout":
+                log.info("payout");
+
+                /**
+                 * EVENT trigger by system
+                 * camapign wallet withdraw
+                 *
+                 * campaign
+                 * amount
+                 */
+
+                break;
+            default:
+                log.error("No matching case for function:"+function);
         }
-        log.error("No matching case for function:"+function);
         return null;
     }
 
@@ -35,7 +74,18 @@ public class CrowdFunding extends ChaincodeBase {
     public String query(ChaincodeStub stub, String function, String[] args) {
         // TODO: show personal crowd funding details, personal creating, personal funding.
         log.info("query, function:" + function);
-        return "Welcome crowd funding";
+        switch (function) {
+            case "campaignInfo" :
+                // load from campaign data from chaincode
+                log.info("Hi, this is a crowdfunding platform on Hyperledger");
+                return "";
+            case "contributeDetail" :
+                // TODO: show campaign contibute detail
+                return "";
+            default:
+                log.error("No matching case for function:"+function);
+                return "";
+        }
     }
 
     @Override
@@ -44,8 +94,8 @@ public class CrowdFunding extends ChaincodeBase {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Crowd funding! starting " + args);
-        log.info("starting");
+        System.out.println("Crowdfunding! starting : " + args);
+        log.info("Crowdfunding starting......");
         new CrowdFunding().start(args);
     }
 }
