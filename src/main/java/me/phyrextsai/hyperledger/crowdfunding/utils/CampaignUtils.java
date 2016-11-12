@@ -6,11 +6,8 @@ import org.hyperledger.java.shim.ChaincodeStub;
 
 /**
  *
- * - Contribute 需要用 table row 存起來
- * stub.createTable
- * stub.insertRow
- * - Campaign 需要存成一個 table 來 handle 各個 camapign
- * -
+ * - Contribute need stored in table
+ * - Campaign need stored in table
  *
  *
  *

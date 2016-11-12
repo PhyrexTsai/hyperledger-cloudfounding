@@ -18,7 +18,7 @@ public class CrowdFunding extends ChaincodeBase {
                 log.info("init");
 
                 /**
-                 * 創建 table schema
+                 * create table schema
                  */
                 CampaignUtils.getInstance(stub).init(args);
                 break;
@@ -27,7 +27,7 @@ public class CrowdFunding extends ChaincodeBase {
                 log.info("campaign");
 
                 /**
-                 * 建立 campaign，owner 是需要收錢的人的地址
+                 * create campaign，owner is the wallet address to collect money
                  *
                  * campaign
                  * owner (wallet address)
@@ -40,7 +40,7 @@ public class CrowdFunding extends ChaincodeBase {
                 log.info("contribute");
 
                 /**
-                 * 貢獻到此眾籌，transfer money from campaign owner's wallet address
+                 * transfer money from campaign owner's wallet address
                  *
                  * campaign
                  * contributor
@@ -52,7 +52,7 @@ public class CrowdFunding extends ChaincodeBase {
                 log.info("refund");
 
                 /**
-                 * 退款給單一個人，transfer from campaign owner's wallet address to contributor
+                 * refund to single person, transfer from campaign owner's wallet address to contributor
                  *
                  * campaign
                  * contributor
