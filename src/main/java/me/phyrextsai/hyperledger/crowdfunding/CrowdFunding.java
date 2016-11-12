@@ -27,7 +27,7 @@ public class CrowdFunding extends ChaincodeBase {
                 log.info("campaign");
 
                 /**
-                 * create campaign，owner is the wallet address to collect money
+                 * create campaign, owner is the wallet address to collect money
                  *
                  * campaign
                  * owner (wallet address)
