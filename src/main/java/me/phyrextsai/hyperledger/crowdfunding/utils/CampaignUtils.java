@@ -34,14 +34,14 @@ public class CampaignUtils {
         if (campaignCreateSuccess) {
             System.out.println(String.format("Create table [%s]", Campaign.CAMPAIGN));
         } else {
-            System.out.println(String.format("Table [Campaign] exist", Campaign.CAMPAIGN));
+            System.out.println(String.format("Table [%s] exist", Campaign.CAMPAIGN));
         }
         Contribute contribute = new Contribute();
         boolean contributeCreateSuccess = contribute.create(stub);
         if (contributeCreateSuccess) {
             System.out.println(String.format("Create table [%s]", Contribute.CONTRIBUTE));
         } else {
-            System.out.println(String.format("Table [Campaign] exist", Contribute.CONTRIBUTE));
+            System.out.println(String.format("Table [%s] exist", Contribute.CONTRIBUTE));
         }
         return null;
     }

@@ -91,7 +91,7 @@ public class Contribute implements Table<Contribute> {
         boolean success = true;
         cols.add(TableProto.ColumnDefinition.newBuilder()
                 .setName("contributeId")
-                .setKey(false)
+                .setKey(true)
                 .setType(TableProto.ColumnDefinition.Type.STRING)
                 .build()
         );
