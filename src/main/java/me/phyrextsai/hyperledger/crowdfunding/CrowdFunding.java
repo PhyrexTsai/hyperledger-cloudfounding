@@ -47,8 +47,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * }
                  *
                  */
-                CampaignUtils.getInstance(stub).create(args);
-                break;
+                return CampaignUtils.getInstance(stub).create(args);
             case "contribute":
                 // TODO: add money in one of the crowd funding
                 log.info("contribute");
@@ -60,8 +59,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * amount
                  */
-                ContributeUtils.getInstance(stub).doContribute(args);
-                break;
+                return ContributeUtils.getInstance(stub).doContribute(args);
             case "refund":
                 log.info("refund");
 

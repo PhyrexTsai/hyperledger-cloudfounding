@@ -46,13 +46,6 @@ public class CampaignUtils {
         } else {
             System.out.println(String.format("Table [%s] exist", Campaign.CAMPAIGN));
         }
-        Contribute contribute = new Contribute();
-        boolean contributeCreateSuccess = contribute.create(stub);
-        if (contributeCreateSuccess) {
-            System.out.println(String.format("Create table [%s]", Contribute.CONTRIBUTE));
-        } else {
-            System.out.println(String.format("Table [%s] exist", Contribute.CONTRIBUTE));
-        }
         return null;
     }
 
