@@ -53,10 +53,15 @@ public class ContributeUtils {
             Contribute contribute = new Contribute(contributeId, campaignId, contributor, beneficiary, amount, false);
 
             if (contribute.insert(stub, contribute)) {
+
+                // TODO : contributer send the money to campaign owner
+                Integer total = Integer.parseInt(stub.getState(campaignId)) + amount;
+                stub.putState(Campaign.TOTAL + ":" + campaignId, String.valueOf(total));
+
                 log.info("Insert record, ContributeId : " + contributeId);
-                return "{\"Data\":\"Create Contribute success, uuid : " + contributeId + ".\"}";
+                return "{\"Data\":\"Contribute success, uuid : " + contributeId + ".\"}";
             } else {
-                return "{\"Error\":\"Create Contribute failed.\"}";
+                return "{\"Error\":\"Contribute failed.\"}";
             }
         } catch (NumberFormatException e) {
             return "{\"Error\":\"Expecting integer value for asset holding\"}";
@@ -77,16 +82,21 @@ public class ContributeUtils {
             }
 
             if (contribute.update(stub, contribute)) {
-                return "{\"Data\":\"Update Contribute success.\"}";
+
+                // TODO : send the money from campaign owner to contributor
+                Integer total = Integer.parseInt(stub.getState(campaignId)) - amount;
+                stub.putState(Campaign.TOTAL + ":" + campaignId, String.valueOf(total));
+
+                return "{\"Data\":\"Refund success.\"}";
             } else {
-                return "{\"Error\":\"Update Contribute failed.\"}";
+                return "{\"Error\":\"Refund failed.\"}";
             }
         } catch (NumberFormatException e) {
             return "{\"Error\":\"Expecting integer value for asset holding\"}";
         }
     }
 
-    public String query(String contributeId) {
+    private String contribute(String contributeId, int column) {
         TableProto.Column queryCol = TableProto.Column.newBuilder()
                 .setString(contributeId).build();
         List<TableProto.Column> key = new ArrayList<>();
@@ -94,7 +104,7 @@ public class ContributeUtils {
         try {
             TableProto.Row tableRow = stub.getRow(Contribute.CONTRIBUTE, key);
             if (tableRow.getSerializedSize() > 0) {
-                return tableRow.getColumns(1).getString();
+                return tableRow.getColumns(column).getString();
             } else {
                 return String.format("Can not found %s record!", Contribute.CONTRIBUTE);
             }

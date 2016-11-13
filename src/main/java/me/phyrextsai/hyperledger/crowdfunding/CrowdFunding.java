@@ -1,5 +1,6 @@
 package me.phyrextsai.hyperledger.crowdfunding;
 
+import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
 import me.phyrextsai.hyperledger.crowdfunding.utils.CampaignUtils;
 import me.phyrextsai.hyperledger.crowdfunding.utils.ContributeUtils;
 import org.hyperledger.java.shim.ChaincodeBase;
@@ -114,6 +115,9 @@ public class CrowdFunding extends ChaincodeBase {
                     return CampaignUtils.getInstance(stub).goal(args[0]);
                 }
                 return "No data!";
+            case "campaignDetail" :
+                // TODO: more information
+                return stub.getState(Campaign.TOTAL + ":" + args[0]);
             case "contribute" :
                 // TODO: show campaign contibute detail
                 return "";

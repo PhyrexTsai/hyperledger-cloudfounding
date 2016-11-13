@@ -18,6 +18,7 @@ public class Campaign implements Table<Campaign> {
     private static Log log = LogFactory.getLog(Campaign.class);
 
     public static final String CAMPAIGN = "Campaign";
+    public static final String TOTAL = "TOTAL";
 
     private String campaignId;
     private String owner;
