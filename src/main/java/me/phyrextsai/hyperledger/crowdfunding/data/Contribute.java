@@ -132,6 +132,11 @@ public class Contribute implements Table<Contribute> {
         );
 
         try {
+            try {
+                stub.deleteTable(CONTRIBUTE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (stub.validateTableName(CONTRIBUTE)) {
                 success = stub.createTable(CONTRIBUTE, cols);
             }

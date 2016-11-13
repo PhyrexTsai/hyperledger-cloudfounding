@@ -38,7 +38,7 @@ public class CampaignUtils {
         return instance;
     }
 
-    public String init(String[] args) {
+    public String init() {
         Campaign campaign = new Campaign();
         boolean campaignCreateSuccess = campaign.create(stub);
         if (campaignCreateSuccess) {

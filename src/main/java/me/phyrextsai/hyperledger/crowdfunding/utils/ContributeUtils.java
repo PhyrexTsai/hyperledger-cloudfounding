@@ -32,7 +32,7 @@ public class ContributeUtils {
         return instance;
     }
 
-    public String init(String[] args) {
+    public String init() {
         Contribute contribute = new Contribute();
         boolean contributeCreateSuccess = contribute.create(stub);
         if (contributeCreateSuccess) {
@@ -65,7 +65,6 @@ public class ContributeUtils {
 
     public String doRefund(String[] args) {
         try {
-            // TODO: delete
             String contributeId = args[0];
             String campaignId = args[1];
             String contributor = args[2];

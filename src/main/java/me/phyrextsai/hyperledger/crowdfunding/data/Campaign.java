@@ -98,6 +98,11 @@ public class Campaign implements Table<Campaign> {
         );
 
         try {
+            try {
+                stub.deleteTable(CAMPAIGN);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (stub.validateTableName(CAMPAIGN)) {
                 success = stub.createTable(CAMPAIGN, cols);
             }

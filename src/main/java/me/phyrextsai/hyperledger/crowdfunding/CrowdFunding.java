@@ -23,8 +23,8 @@ public class CrowdFunding extends ChaincodeBase {
                  *
                  * TODO: check Member, only admin
                  */
-                CampaignUtils.getInstance(stub).init(args);
-                ContributeUtils.getInstance(stub).init(args);
+                CampaignUtils.getInstance(stub).init();
+                ContributeUtils.getInstance(stub).init();
                 break;
             case "campaign":
                 // TODO: create a crowd funding
