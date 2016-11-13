@@ -3,6 +3,7 @@ package me.phyrextsai.hyperledger.crowdfunding.utils;
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
 import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
 import org.hyperledger.java.shim.ChaincodeStub;
+import java.util.UUID;
 
 /**
  *
@@ -48,7 +49,7 @@ public class CampaignUtils {
 
     public String createCampaign(String[] args) {
         try {
-            String campaignId = stub.getUuid();
+            String campaignId = UUID.randomUUID().toString();
             String address = args[0];
             String info = args[1];
             Integer fundingAmount = Integer.parseInt(args[2]);
@@ -66,7 +67,7 @@ public class CampaignUtils {
 
     public String doContribute(String[] args) {
         try {
-            String contributeId = stub.getUuid();
+            String contributeId = UUID.randomUUID().toString();
             String campaignId = args[0];
             String contributor = args[1];
             String beneficiary = args[2];
@@ -86,11 +87,11 @@ public class CampaignUtils {
     public String doRefund(String[] args) {
         try {
             // TODO: delete
-            String contributeId = stub.getUuid();
-            String campaignId = args[0];
-            String contributor = args[1];
-            String beneficiary = args[2];
-            Integer amount = Integer.parseInt(args[3]);
+            String contributeId = args[0];
+            String campaignId = args[1];
+            String contributor = args[2];
+            String beneficiary = args[3];
+            Integer amount = Integer.parseInt(args[4]);
             Contribute contribute = new Contribute(contributeId, campaignId, contributor, beneficiary, amount, true);
 
             if (contribute.get(stub, contribute) == null) {

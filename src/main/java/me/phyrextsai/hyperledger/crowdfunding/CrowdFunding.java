@@ -32,6 +32,16 @@ public class CrowdFunding extends ChaincodeBase {
                  * campaign
                  * owner (wallet address)
                  * fundingGoal
+                 *
+                 * {
+                 *   "Function":"campaign",
+                 *   "Args":[
+                 *     "STRING:owner wallet address",
+                 *     "STRING:info what is this campaign for",
+                 *     "INT:funding amount"
+                 *   ]
+                 * }
+                 *
                  */
                 CampaignUtils.getInstance(stub).createCampaign(args);
                 break;
@@ -86,7 +96,7 @@ public class CrowdFunding extends ChaincodeBase {
             case "campaignInfo" :
                 // load from campaign data from chaincode
                 log.info("Hi, this is a crowdfunding platform on Hyperledger");
-                return "";
+                return "Hi, this is a crowdfunding platform on Hyperledger";
             case "contributeDetail" :
                 // TODO: show campaign contibute detail
                 return "";
