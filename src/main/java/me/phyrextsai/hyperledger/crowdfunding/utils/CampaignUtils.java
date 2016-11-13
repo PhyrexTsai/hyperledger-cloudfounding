@@ -2,7 +2,13 @@ package me.phyrextsai.hyperledger.crowdfunding.utils;
 
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
 import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hyperledger.java.shim.ChaincodeStub;
+import org.hyperledger.protos.TableProto;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -15,6 +21,9 @@ import java.util.UUID;
  * Created by phyrextsai on 2016/11/11.
  */
 public class CampaignUtils {
+
+    private static Log log = LogFactory.getLog(CampaignUtils.class);
+
     private ChaincodeStub stub = null;
     private static CampaignUtils instance = null;
 
@@ -47,7 +56,7 @@ public class CampaignUtils {
         return null;
     }
 
-    public String createCampaign(String[] args) {
+    public String create(String[] args) {
         try {
             String campaignId = UUID.randomUUID().toString();
             String address = args[0];
@@ -56,7 +65,8 @@ public class CampaignUtils {
             Campaign campaign = new Campaign(campaignId, address, info, fundingAmount);
 
             if (campaign.insert(stub, campaign)) {
-                return "{\"Data\":\"Create Campaign success.\"}";
+                log.info("Insert record, CampaignId : " + campaignId);
+                return "{\"Data\":\"Create Campaign success, uuid : " + campaignId + ".\"}";
             } else {
                 return "{\"Error\":\"Create Campaign failed.\"}";
             }
@@ -65,47 +75,35 @@ public class CampaignUtils {
         }
     }
 
-    public String doContribute(String[] args) {
-        try {
-            String contributeId = UUID.randomUUID().toString();
-            String campaignId = args[0];
-            String contributor = args[1];
-            String beneficiary = args[2];
-            Integer amount = Integer.parseInt(args[3]);
-            Contribute contribute = new Contribute(contributeId, campaignId, contributor, beneficiary, amount, false);
-
-            if (contribute.insert(stub, contribute)) {
-                return "{\"Data\":\"Create Contribute success.\"}";
-            } else {
-                return "{\"Error\":\"Create Contribute failed.\"}";
-            }
-        } catch (NumberFormatException e) {
-            return "{\"Error\":\"Expecting integer value for asset holding\"}";
-        }
+    public String owner(String campaignId) {
+        return campaign(campaignId, 1);
     }
 
-    public String doRefund(String[] args) {
+    public String info(String campaignId) {
+        return campaign(campaignId, 2);
+    }
+
+    public String goal(String campaignId) {
+        return campaign(campaignId, 3);
+    }
+
+    private String campaign(String campaignId, int column) {
+        TableProto.Column queryCol = TableProto.Column.newBuilder()
+                .setString(campaignId).build();
+        List<TableProto.Column> key = new ArrayList<>();
+        key.add(queryCol);
         try {
-            // TODO: delete
-            String contributeId = args[0];
-            String campaignId = args[1];
-            String contributor = args[2];
-            String beneficiary = args[3];
-            Integer amount = Integer.parseInt(args[4]);
-            Contribute contribute = new Contribute(contributeId, campaignId, contributor, beneficiary, amount, true);
-
-            if (contribute.get(stub, contribute) == null) {
-                return "{\"Error\":\"Can not find any Contribute data.\"}";
-            }
-
-            if (contribute.update(stub, contribute)) {
-                return "{\"Data\":\"Update Contribute success.\"}";
+            TableProto.Row tableRow = stub.getRow(Campaign.CAMPAIGN,key);
+            if (tableRow.getSerializedSize() > 0) {
+                // TODO: better use getColumnList to check
+                return tableRow.getColumns(column).getString();
             } else {
-                return "{\"Error\":\"Update Contribute failed.\"}";
+                return String.format("Can not found %s record!", Campaign.CAMPAIGN);
             }
-        } catch (NumberFormatException e) {
-            return "{\"Error\":\"Expecting integer value for asset holding\"}";
+        } catch (Exception invalidProtocolBufferException) {
+            invalidProtocolBufferException.printStackTrace();
         }
+        return "";
     }
 
 }

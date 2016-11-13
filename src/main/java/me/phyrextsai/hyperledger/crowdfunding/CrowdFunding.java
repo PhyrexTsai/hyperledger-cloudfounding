@@ -1,6 +1,7 @@
 package me.phyrextsai.hyperledger.crowdfunding;
 
 import me.phyrextsai.hyperledger.crowdfunding.utils.CampaignUtils;
+import me.phyrextsai.hyperledger.crowdfunding.utils.ContributeUtils;
 import org.hyperledger.java.shim.ChaincodeBase;
 import org.hyperledger.java.shim.ChaincodeStub;
 import org.apache.commons.logging.Log;
@@ -19,8 +20,11 @@ public class CrowdFunding extends ChaincodeBase {
 
                 /**
                  * create table schema
+                 *
+                 * TODO: check Member, only admin
                  */
                 CampaignUtils.getInstance(stub).init(args);
+                ContributeUtils.getInstance(stub).init(args);
                 break;
             case "campaign":
                 // TODO: create a crowd funding
@@ -43,7 +47,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * }
                  *
                  */
-                CampaignUtils.getInstance(stub).createCampaign(args);
+                CampaignUtils.getInstance(stub).create(args);
                 break;
             case "contribute":
                 // TODO: add money in one of the crowd funding
@@ -56,7 +60,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * amount
                  */
-                CampaignUtils.getInstance(stub).doContribute(args);
+                ContributeUtils.getInstance(stub).doContribute(args);
                 break;
             case "refund":
                 log.info("refund");
@@ -68,7 +72,7 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * refund
                  */
-                CampaignUtils.getInstance(stub).doRefund(args);
+                ContributeUtils.getInstance(stub).doRefund(args);
                 break;
             case "payout":
                 log.info("payout");
@@ -95,9 +99,24 @@ public class CrowdFunding extends ChaincodeBase {
         switch (function) {
             case "campaignInfo" :
                 // load from campaign data from chaincode
-                log.info("Hi, this is a crowdfunding platform on Hyperledger");
-                return "Hi, this is a crowdfunding platform on Hyperledger";
-            case "contributeDetail" :
+                if (args.length == 1) {
+                    log.info("CASE : campaignInfo, ID : " + args[0]);
+                    return CampaignUtils.getInstance(stub).info(args[0]);
+                }
+                return "No data!";
+            case "campaignOwner" :
+                if (args.length == 1) {
+                    log.info("CASE : campaignOwner, ID : " + args[0]);
+                    return CampaignUtils.getInstance(stub).owner(args[0]);
+                }
+                return "No data!";
+            case "campaignGoal" :
+                if (args.length == 1) {
+                    log.info("CASE : campaignGoal, ID : " + args[0]);
+                    return CampaignUtils.getInstance(stub).goal(args[0]);
+                }
+                return "No data!";
+            case "contribute" :
                 // TODO: show campaign contibute detail
                 return "";
             default:
