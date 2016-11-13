@@ -8,29 +8,15 @@ git clone https://github.com/PhyrexTsai/hyperledger-docker
 
 -- build with docker on your local
 cd {PATH}/hyperledger-docker
-docker-compose up
-```
 
-## Environment setting in Docker
-
-```
--- install gradle
-add-apt-repository ppa:cwchien/gradle \
-	&& apt-get update \
-	&& apt-get install -y gradle-ppa
-  
--- install java 8
-add-apt-repository -y ppa:webupd8team/java && \
-	apt-get update && \
-	apt-get install -y oracle-java8-installer
-  
--- set JAVA_HOME
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+-- run via start.sh to auto build docker
+./start.sh
 ```
 
 ## Copy repo into Docker
 
 ```
+cd /opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/java
 git clone https://github.com/PhyrexTsai/hyperledger-crowdfounding
 ```
 
@@ -54,13 +40,11 @@ gradle -b build.gradle run
 
 ```
 -- login
-peer network login jim
-6avZQLwcUe9b
+peer network login admin 
+Xurw3yU9zI0l
 
--- chaincode command 
-peer chaincode deploy -u jim -l java -n CrowdFunding -c '{"Function":"init","Args":[]}'
-#peer chaincode query -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["Me"]}'
-peer chaincode invoke -u jim -l java -n CrowdFunding -c '{"Function":"hello","Args":[""]}'
-#peer chaincode invoke -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["hey","me"]}'
-#peer chaincode query -u jim -l java -n CrowdFunding -c '{"Function":"put","Args":["hey"]}'
+-- chaincode command
+peer chaincode deploy -u admin -l java -n CrowdFunding -c '{"Function":"init","Args":[]}'
+peer chaincode query -u admin -l java -n CrowdFunding -c '{"Function":"campaignInfo","Args":["14062405-8191-42e6-bc0b-a1cd7e829165"]}'
+peer chaincode invoke -u admin -l java -n CrowdFunding -c '{"Function":"campaign","Args":["wallet", "info", "100"]}'
 ```
