@@ -89,6 +89,9 @@ public class CampaignUtils {
             TableProto.Row tableRow = stub.getRow(Campaign.CAMPAIGN,key);
             if (tableRow.getSerializedSize() > 0) {
                 // TODO: better use getColumnList to check
+                for(TableProto.Column col : tableRow.getColumnsList()){
+                    System.out.println("Column : " + col);
+                }
                 return tableRow.getColumns(column).getString();
             } else {
                 return String.format("Can not found %s record!", Campaign.CAMPAIGN);
