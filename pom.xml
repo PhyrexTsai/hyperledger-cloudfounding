@@ -22,10 +22,10 @@ g/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>example</groupId>
-    <artifactId>chaincode-Range</artifactId>
+    <groupId>me.phyrextsai</groupId>
+    <artifactId>hyperledger-crowdfunding</artifactId>
     <packaging>jar</packaging>
-    <name>java-Range-example</name>
+    <name>hyperledger-crowdfunding</name>
     <version>1.0</version>
     <url>http://maven.apache.org</url>
     <build>
