@@ -2,6 +2,7 @@ package me.phyrextsai.hyperledger.crowdfunding.utils;
 
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
 import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
+import me.phyrextsai.hyperledger.crowdfunding.helper.CampaignHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hyperledger.java.shim.ChaincodeStub;
@@ -56,7 +57,7 @@ public class ContributeUtils {
 
                 // TODO : contributer send the money to campaign owner
                 Integer total = Integer.parseInt(stub.getState(campaignId)) + amount;
-                stub.putState(Campaign.TOTAL + ":" + campaignId, String.valueOf(total));
+                stub.putState(CampaignHelper.TOTAL + ":" + campaignId, String.valueOf(total));
 
                 log.info("Insert record, ContributeId : " + contributeId);
                 return "{\"Data\":\"Contribute success, uuid : " + contributeId + ".\"}";
@@ -85,7 +86,7 @@ public class ContributeUtils {
 
                 // TODO : send the money from campaign owner to contributor
                 Integer total = Integer.parseInt(stub.getState(campaignId)) - amount;
-                stub.putState(Campaign.TOTAL + ":" + campaignId, String.valueOf(total));
+                stub.putState(CampaignHelper.TOTAL + ":" + campaignId, String.valueOf(total));
 
                 return "{\"Data\":\"Refund success.\"}";
             } else {
