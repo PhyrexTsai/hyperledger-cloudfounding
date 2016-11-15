@@ -48,7 +48,8 @@ public class CrowdFunding extends ChaincodeBase {
                  * }
                  *
                  */
-                return CampaignUtils.getInstance(stub).create(args);
+                CampaignUtils.getInstance(stub).create(args);
+                break;
             case "contribute":
                 // TODO: add money in one of the crowd funding
                 log.info("contribute");
@@ -60,7 +61,8 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * amount
                  */
-                return ContributeUtils.getInstance(stub).doContribute(args);
+                ContributeUtils.getInstance(stub).doContribute(args);
+                break;
             case "refund":
                 log.info("refund");
 
@@ -123,8 +125,9 @@ public class CrowdFunding extends ChaincodeBase {
                 return "";
             default:
                 log.error("No matching case for function:"+function);
-                return "";
+                break;
         }
+        return "";
     }
 
     @Override
