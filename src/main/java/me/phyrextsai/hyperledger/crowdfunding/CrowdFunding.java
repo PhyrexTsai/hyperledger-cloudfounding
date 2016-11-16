@@ -82,6 +82,13 @@ public class CrowdFunding extends ChaincodeBase {
                 } else {
                     if (contributeHelper.insert(stub, contribute)) {
                         log.info("Insert record, ContributeId : " + contribute.getCampaignId());
+
+                        Integer total = 0;
+                        if (stub.getState(CampaignHelper.TOTAL + ":" + campaign.getCampaignId()) != null) {
+                            total += contribute.getAmount();
+                        }
+                        stub.putState(CampaignHelper.TOTAL + campaign.getCampaignId(), String.valueOf(total));
+
                         return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
                     } else {
                         return "{\"Error\":\"Create Contribute failed.\"}";
@@ -97,15 +104,23 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * refund
                  */
-                contribute = contributeHelper.doRefund(args);
-                if (contribute == null) {
+                if (args.length != 1) {
                     return "{\"Error\":\"Wrong arguments.\"}";
+                }
+                contribute = contributeHelper.get(stub, args[0]);
+                if (contribute == null) {
+                    return "{\"Error\":\"Can not find Contribute record.\"}";
                 } else {
-                    if (contributeHelper.insert(stub, contribute)) {
+                    contribute.setRefund(true);
+                    if (contributeHelper.update(stub, contribute)) {
                         log.info("Insert record, ContributeId : " + contribute.getCampaignId());
-                        return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
+
+                        Integer total = Integer.parseInt(stub.getState(CampaignHelper.TOTAL + ":" + campaign.getCampaignId())) - contribute.getAmount();
+                        stub.putState(CampaignHelper.TOTAL + campaign.getCampaignId(), String.valueOf(total));
+
+                        return "{\"Data\":\"Refund success, uuid : " + contribute.getCampaignId() + ".\"}";
                     } else {
-                        return "{\"Error\":\"Create Contribute failed.\"}";
+                        return "{\"Error\":\"Refund failed.\"}";
                     }
                 }
             case "payout":
