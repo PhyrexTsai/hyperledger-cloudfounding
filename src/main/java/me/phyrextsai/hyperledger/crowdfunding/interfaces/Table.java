@@ -11,7 +11,8 @@ public interface Table<T> {
     public boolean insert(ChaincodeStub stub, T entity);
     public boolean update(ChaincodeStub stub, T entity);
     public boolean delete(ChaincodeStub stub, T entity);
-    public TableProto.Row get(ChaincodeStub stub, T entity);
+    public T parse(String[] args);
+    public T get(ChaincodeStub stub, String key);
     public TableProto.Row row(T entity);
 }
 
