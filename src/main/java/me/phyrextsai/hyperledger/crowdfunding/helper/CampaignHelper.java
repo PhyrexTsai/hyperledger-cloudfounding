@@ -2,6 +2,7 @@ package me.phyrextsai.hyperledger.crowdfunding.helper;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
+import me.phyrextsai.hyperledger.crowdfunding.interfaces.Table;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hyperledger.java.shim.ChaincodeStub;
@@ -9,19 +10,19 @@ import org.hyperledger.protos.TableProto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by phyrextsai on 2016/11/15.
  */
-public class CampaignHelper {
+public class CampaignHelper implements Table<Campaign> {
     private static Log log = LogFactory.getLog(CampaignHelper.class);
 
     public static final String CAMPAIGN = "Campaign";
     public static final String TOTAL = "TOTAL";
 
+    @Override
     public boolean create(ChaincodeStub stub) {
-
-
         List<TableProto.ColumnDefinition> cols = new ArrayList<TableProto.ColumnDefinition>();
         boolean success = true;
         cols.add(TableProto.ColumnDefinition.newBuilder()
@@ -67,6 +68,7 @@ public class CampaignHelper {
         return success;
     }
 
+    @Override
     public boolean insert(ChaincodeStub stub, Campaign campaign) {
         boolean success = true;
         try {
@@ -80,6 +82,7 @@ public class CampaignHelper {
         return success;
     }
 
+    @Override
     public boolean update(ChaincodeStub stub, Campaign campaign) {
         boolean success = true;
         try {
@@ -93,6 +96,7 @@ public class CampaignHelper {
         return success;
     }
 
+    @Override
     public boolean delete(ChaincodeStub stub, Campaign campaign) {
         List<TableProto.Column> keys = new ArrayList<TableProto.Column>();
         TableProto.Column campaignId =
@@ -102,20 +106,38 @@ public class CampaignHelper {
         return stub.deleteRow(CAMPAIGN, keys);
     }
 
-    public TableProto.Row get(ChaincodeStub stub, Campaign campaign) {
+    @Override
+    public Campaign get(ChaincodeStub stub, String key) {
         try {
             List<TableProto.Column> keys = new ArrayList<TableProto.Column>();
             TableProto.Column campaignId =
                     TableProto.Column.newBuilder()
-                            .setString(campaign.getCampaignId()).build();
+                            .setString(key).build();
             keys.add(campaignId);
-            return stub.getRow(CAMPAIGN, keys);
+            TableProto.Row tableRow = stub.getRow(CAMPAIGN, keys);
+            return new Campaign(key,
+                    tableRow.getColumns(1).toString(),
+                    tableRow.getColumns(2).getString(),
+                    tableRow.getColumns(3).getUint32());
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    @Override
+    public Campaign parse(String[] args) {
+        if (args.length != 3) {
+            return null;
+        }
+        String campaignId = UUID.randomUUID().toString();
+        String address = args[0];
+        String info = args[1];
+        Integer fundingAmount = Integer.parseInt(args[2]);
+        return new Campaign(campaignId, address, info, fundingAmount);
+    }
+
+    @Override
     public TableProto.Row row(Campaign campaign) {
         List<TableProto.Column> cols = new ArrayList<TableProto.Column>();
         TableProto.Column campaignId =

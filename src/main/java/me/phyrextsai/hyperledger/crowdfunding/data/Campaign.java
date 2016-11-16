@@ -27,7 +27,6 @@ public class Campaign {
         this.setOwner(owner);
         this.setInfo(info);
         this.setFundingAmount(fundingAmount);
-
     }
 
     public String getCampaignId() {

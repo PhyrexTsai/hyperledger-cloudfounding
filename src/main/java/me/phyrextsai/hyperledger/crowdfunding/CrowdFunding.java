@@ -1,18 +1,13 @@
 package me.phyrextsai.hyperledger.crowdfunding;
 
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
+import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
 import me.phyrextsai.hyperledger.crowdfunding.helper.CampaignHelper;
-import me.phyrextsai.hyperledger.crowdfunding.utils.CampaignUtils;
-import me.phyrextsai.hyperledger.crowdfunding.utils.ContributeUtils;
+import me.phyrextsai.hyperledger.crowdfunding.helper.ContributeHelper;
 import org.hyperledger.java.shim.ChaincodeBase;
 import org.hyperledger.java.shim.ChaincodeStub;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hyperledger.protos.TableProto;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class CrowdFunding extends ChaincodeBase {
 
@@ -21,6 +16,11 @@ public class CrowdFunding extends ChaincodeBase {
     @Override
     public String run(ChaincodeStub stub, String function, String[] args) {
         log.info("run, function:" + function);
+        CampaignHelper campaignHelper = new CampaignHelper();
+        ContributeHelper contributeHelper = new ContributeHelper();
+        Campaign campaign = null;
+        Contribute contribute = null;
+
         switch (function) {
             case "init":
                 log.info("init");
@@ -30,8 +30,8 @@ public class CrowdFunding extends ChaincodeBase {
                  *
                  * TODO: check Member, only admin
                  */
-                CampaignUtils.getInstance(stub).init();
-                ContributeUtils.getInstance(stub).init();
+                campaignHelper.create(stub);
+                contributeHelper.create(stub);
                 break;
             case "campaign":
                 // TODO: create a crowd funding
@@ -54,9 +54,17 @@ public class CrowdFunding extends ChaincodeBase {
                  * }
                  *
                  */
-                //CampaignUtils.getInstance(stub).create(args);
-                createCampaign(stub, args);
-                break;
+                campaign = campaignHelper.parse(args);
+                if (campaign == null) {
+                    return "{\"Error\":\"Wrong arguments.\"}";
+                } else {
+                    if (campaignHelper.insert(stub, campaign)) {
+                        log.info("Insert record, CampaignId : " + campaign.getCampaignId());
+                        return "{\"Data\":\"Create Campaign success, uuid : " + campaign.getCampaignId() + ".\"}";
+                    } else {
+                        return "{\"Error\":\"Create Campaign failed.\"}";
+                    }
+                }
             case "contribute":
                 // TODO: add money in one of the crowd funding
                 log.info("contribute");
@@ -68,8 +76,17 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * amount
                  */
-                ContributeUtils.getInstance(stub).doContribute(args);
-                break;
+                contribute = contributeHelper.doContribute(args);
+                if (contribute == null) {
+                    return "{\"Error\":\"Wrong arguments.\"}";
+                } else {
+                    if (contributeHelper.insert(stub, contribute)) {
+                        log.info("Insert record, ContributeId : " + contribute.getCampaignId());
+                        return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
+                    } else {
+                        return "{\"Error\":\"Create Contribute failed.\"}";
+                    }
+                }
             case "refund":
                 log.info("refund");
 
@@ -80,8 +97,17 @@ public class CrowdFunding extends ChaincodeBase {
                  * contributor
                  * refund
                  */
-                ContributeUtils.getInstance(stub).doRefund(args);
-                break;
+                contribute = contributeHelper.doRefund(args);
+                if (contribute == null) {
+                    return "{\"Error\":\"Wrong arguments.\"}";
+                } else {
+                    if (contributeHelper.insert(stub, contribute)) {
+                        log.info("Insert record, ContributeId : " + contribute.getCampaignId());
+                        return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
+                    } else {
+                        return "{\"Error\":\"Create Contribute failed.\"}";
+                    }
+                }
             case "payout":
                 log.info("payout");
 
@@ -109,19 +135,22 @@ public class CrowdFunding extends ChaincodeBase {
                 // load from campaign data from chaincode
                 if (args.length == 1) {
                     log.info("CASE : campaignInfo, ID : " + args[0]);
-                    return info(stub, args[0]);
+                    CampaignHelper helper = new CampaignHelper();
+                    return helper.get(stub, args[0]).getInfo();
                 }
                 return "No data!";
             case "campaignOwner" :
                 if (args.length == 1) {
                     log.info("CASE : campaignOwner, ID : " + args[0]);
-                    return owner(stub, args[0]);
+                    CampaignHelper helper = new CampaignHelper();
+                    return helper.get(stub, args[0]).getOwner();
                 }
                 return "No data!";
             case "campaignGoal" :
                 if (args.length == 1) {
                     log.info("CASE : campaignGoal, ID : " + args[0]);
-                    return goal(stub, args[0]);
+                    CampaignHelper helper = new CampaignHelper();
+                    return String.valueOf(helper.get(stub, args[0]).getFundingAmount());
                 }
                 return "No data!";
             case "campaignDetail" :
@@ -140,59 +169,6 @@ public class CrowdFunding extends ChaincodeBase {
     @Override
     public String getChaincodeID() {
         return "CrowdFunding";
-    }
-
-    private String createCampaign(ChaincodeStub stub, String[] args) {
-        try {
-            String campaignId = UUID.randomUUID().toString();
-            String address = args[0];
-            String info = args[1];
-            Integer fundingAmount = Integer.parseInt(args[2]);
-            Campaign campaign = new Campaign(campaignId, address, info, fundingAmount);
-            CampaignHelper helper = new CampaignHelper();
-            if (helper.insert(stub, campaign)) {
-                log.info("Insert record, CampaignId : " + campaignId);
-                return "{\"Data\":\"Create Campaign success, uuid : " + campaignId + ".\"}";
-            } else {
-                return "{\"Error\":\"Create Campaign failed.\"}";
-            }
-        } catch (NumberFormatException e) {
-            return "{\"Error\":\"Expecting integer value for asset holding\"}";
-        }
-    }
-
-    public String owner(ChaincodeStub stub, String campaignId) {
-        return campaign(stub, campaignId, 1);
-    }
-
-    public String info(ChaincodeStub stub, String campaignId) {
-        return campaign(stub, campaignId, 2);
-    }
-
-    public String goal(ChaincodeStub stub, String campaignId) {
-        return campaign(stub, campaignId, 3);
-    }
-
-    private String campaign(ChaincodeStub stub, String campaignId, int column) {
-        TableProto.Column queryCol = TableProto.Column.newBuilder()
-                .setString(campaignId).build();
-        List<TableProto.Column> key = new ArrayList<>();
-        key.add(queryCol);
-        try {
-            TableProto.Row tableRow = stub.getRow(CampaignHelper.CAMPAIGN,key);
-            if (tableRow.getSerializedSize() > 0) {
-                // TODO: better use getColumnList to check
-                for(TableProto.Column col : tableRow.getColumnsList()){
-                    System.out.println("Column : " + col);
-                }
-                return tableRow.getColumns(column).getString();
-            } else {
-                return String.format("Can not found %s record!", CampaignHelper.CAMPAIGN);
-            }
-        } catch (Exception invalidProtocolBufferException) {
-            invalidProtocolBufferException.printStackTrace();
-        }
-        return "";
     }
 
     public static void main(String[] args) throws Exception {

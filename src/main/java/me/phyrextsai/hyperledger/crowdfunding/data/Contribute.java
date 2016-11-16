@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by phyrextsai on 2016/11/11.
  */
-public class Contribute implements Table<Contribute> {
+public class Contribute {
 
     private static Log log = LogFactory.getLog(Contribute.class);
 
@@ -26,15 +26,13 @@ public class Contribute implements Table<Contribute> {
     private Integer amount;
     private Boolean refund = false;
 
-    public Contribute() {}
-
     public Contribute(String contributeId, String campaignId, String contributor, String beneficiary, Integer amount, Boolean refund) {
         this.setContributeId(contributeId);
         this.setCampaignId(campaignId);
         this.setContributor(contributor);
         this.setBeneficiary(beneficiary);
         this.setAmount(amount);
-        this.isRefund(refund);
+        this.setRefund(refund);
     }
 
     public String getContributeId() {
@@ -77,158 +75,11 @@ public class Contribute implements Table<Contribute> {
         this.amount = amount;
     }
 
-    public Boolean getRefund() {
+    public Boolean isRefund() {
         return refund;
     }
 
-    public void isRefund(Boolean refund) {
+    public void setRefund(Boolean refund) {
         this.refund = refund;
-    }
-
-    @Override
-    public boolean create(ChaincodeStub stub) {
-        List<TableProto.ColumnDefinition> cols = new ArrayList<TableProto.ColumnDefinition>();
-        boolean success = true;
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("contributeId")
-                .setKey(true)
-                .setType(TableProto.ColumnDefinition.Type.STRING)
-                .build()
-        );
-
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("campaignId")
-                .setKey(false)
-                .setType(TableProto.ColumnDefinition.Type.STRING)
-                .build()
-        );
-
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("contributor")
-                .setKey(false)
-                .setType(TableProto.ColumnDefinition.Type.STRING)
-                .build()
-        );
-
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("beneficiary")
-                .setKey(false)
-                .setType(TableProto.ColumnDefinition.Type.STRING)
-                .build()
-        );
-
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("amount")
-                .setKey(false)
-                .setType(TableProto.ColumnDefinition.Type.UINT32)
-                .build()
-        );
-
-        cols.add(TableProto.ColumnDefinition.newBuilder()
-                .setName("refund")
-                .setKey(false)
-                .setType(TableProto.ColumnDefinition.Type.BOOL)
-                .build()
-        );
-
-        try {
-            try {
-                stub.deleteTable(CONTRIBUTE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (stub.validateTableName(CONTRIBUTE)) {
-                success = stub.createTable(CONTRIBUTE, cols);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return success;
-    }
-
-    public boolean insert(ChaincodeStub stub, Contribute contribute) {
-        boolean success = true;
-        try {
-            success = stub.insertRow(CONTRIBUTE, row(contribute));
-            if (success){
-                log.info("Row successfully inserted");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return success;
-    }
-
-    public boolean update(ChaincodeStub stub, Contribute contribute) {
-        boolean success = true;
-        try {
-            success = stub.replaceRow(CONTRIBUTE, row(contribute));
-            if (success){
-                log.info("Row successfully updated");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return success;
-    }
-
-    @Override
-    public boolean delete(ChaincodeStub stub, Contribute contribute) {
-        List<TableProto.Column> keys = new ArrayList<TableProto.Column>();
-        TableProto.Column campaignId =
-                TableProto.Column.newBuilder()
-                        .setString(contribute.getCampaignId()).build();
-        keys.add(campaignId);
-        return stub.deleteRow(CONTRIBUTE, keys);
-    }
-
-    public TableProto.Row get(ChaincodeStub stub, Contribute contribute) {
-        try {
-            List<TableProto.Column> keys = new ArrayList<TableProto.Column>();
-            TableProto.Column campaignId =
-                    TableProto.Column.newBuilder()
-                            .setString(contribute.getContributeId()).build();
-            keys.add(campaignId);
-            return stub.getRow(CONTRIBUTE, keys);
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public TableProto.Row row(Contribute contribute) {
-        List<TableProto.Column> cols = new ArrayList<TableProto.Column>();
-        TableProto.Column contributeId =
-                TableProto.Column.newBuilder()
-                        .setString(contribute.getContributeId()).build();
-
-        TableProto.Column campaignId =
-                TableProto.Column.newBuilder()
-                        .setString(contribute.getCampaignId()).build();
-
-        TableProto.Column contributor =
-                TableProto.Column.newBuilder()
-                        .setString(contribute.getContributor()).build();
-
-        TableProto.Column beneficiary =
-                TableProto.Column.newBuilder()
-                        .setString(contribute.getBeneficiary()).build();
-
-        TableProto.Column amount =
-                TableProto.Column.newBuilder()
-                        .setUint32(contribute.getAmount()).build();
-
-        cols.add(contributeId);
-        cols.add(campaignId);
-        cols.add(contributor);
-        cols.add(beneficiary);
-        cols.add(amount);
-
-        TableProto.Row row = TableProto.Row.newBuilder()
-                .addAllColumns(cols)
-                .build();
-
-        return row;
     }
 }
