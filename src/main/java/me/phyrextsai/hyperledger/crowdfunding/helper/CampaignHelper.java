@@ -2,12 +2,14 @@ package me.phyrextsai.hyperledger.crowdfunding.helper;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
-import me.phyrextsai.hyperledger.crowdfunding.interfaces.Table;
+import me.phyrextsai.hyperledger.crowdfunding.interfaces.TableEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hyperledger.java.shim.ChaincodeStub;
 import org.hyperledger.protos.TableProto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.UUID;
 /**
  * Created by phyrextsai on 2016/11/15.
  */
-public class CampaignHelper implements Table<Campaign> {
+public class CampaignHelper implements TableEntity<Campaign> {
     private static Log log = LogFactory.getLog(CampaignHelper.class);
 
     public static final String CAMPAIGN = "Campaign";
@@ -50,6 +52,13 @@ public class CampaignHelper implements Table<Campaign> {
                 .setName("fundingAmount")
                 .setKey(false)
                 .setType(TableProto.ColumnDefinition.Type.UINT32)
+                .build()
+        );
+
+        cols.add(TableProto.ColumnDefinition.newBuilder()
+                .setName("campaignDueDate")
+                .setKey(false)
+                .setType(TableProto.ColumnDefinition.Type.UINT64)
                 .build()
         );
 
@@ -118,23 +127,30 @@ public class CampaignHelper implements Table<Campaign> {
             return new Campaign(key,
                     tableRow.getColumns(1).toString(),
                     tableRow.getColumns(2).getString(),
-                    tableRow.getColumns(3).getUint32());
+                    tableRow.getColumns(3).getUint32(),
+                    tableRow.getColumns(4).getUint64());
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    @Override
     public Campaign parse(String[] args) {
         if (args.length != 3) {
             return null;
         }
-        String campaignId = UUID.randomUUID().toString();
-        String address = args[0];
-        String info = args[1];
-        Integer fundingAmount = Integer.parseInt(args[2]);
-        return new Campaign(campaignId, address, info, fundingAmount);
+        try {
+            String campaignId = UUID.randomUUID().toString();
+            String address = args[0];
+            String info = args[1];
+            Integer fundingAmount = Integer.parseInt(args[2]);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            return new Campaign(campaignId, address, info, fundingAmount, simpleDateFormat.parse(args[3]).getTime());
+        } catch (ParseException e) {
+            log.error("format error : " + args[3]);
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -156,10 +172,15 @@ public class CampaignHelper implements Table<Campaign> {
                 TableProto.Column.newBuilder()
                         .setUint32(campaign.getFundingAmount()).build();
 
+        TableProto.Column campaignDueDate =
+                TableProto.Column.newBuilder()
+                        .setUint64(campaign.getCampaignDueDate()).build();
+
         cols.add(campaignId);
         cols.add(owner);
         cols.add(info);
         cols.add(fundingAmount);
+        cols.add(campaignDueDate);
 
         TableProto.Row row = TableProto.Row.newBuilder()
                 .addAllColumns(cols)

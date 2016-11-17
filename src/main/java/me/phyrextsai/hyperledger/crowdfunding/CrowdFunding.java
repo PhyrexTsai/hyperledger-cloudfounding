@@ -34,26 +34,8 @@ public class CrowdFunding extends ChaincodeBase {
                 contributeHelper.create(stub);
                 break;
             case "campaign":
-                // TODO: create a crowd funding
                 log.info("campaign");
 
-                /**
-                 * create campaign, owner is the wallet address to collect money
-                 *
-                 * campaign
-                 * owner (wallet address)
-                 * fundingGoal
-                 *
-                 * {
-                 *   "Function":"campaign",
-                 *   "Args":[
-                 *     "STRING:owner wallet address",
-                 *     "STRING:info what is this campaign for",
-                 *     "INT:funding amount"
-                 *   ]
-                 * }
-                 *
-                 */
                 campaign = campaignHelper.parse(args);
                 if (campaign == null) {
                     return "{\"Error\":\"Wrong arguments.\"}";
@@ -66,17 +48,9 @@ public class CrowdFunding extends ChaincodeBase {
                     }
                 }
             case "contribute":
-                // TODO: add money in one of the crowd funding
                 log.info("contribute");
 
-                /**
-                 * transfer money from campaign owner's wallet address
-                 *
-                 * campaign
-                 * contributor
-                 * amount
-                 */
-                contribute = contributeHelper.doContribute(args);
+                contribute = contributeHelper.doContribute(stub, args);
                 if (contribute == null) {
                     return "{\"Error\":\"Wrong arguments.\"}";
                 } else {
@@ -97,13 +71,6 @@ public class CrowdFunding extends ChaincodeBase {
             case "refund":
                 log.info("refund");
 
-                /**
-                 * refund to single person, transfer from campaign owner's wallet address to contributor
-                 *
-                 * campaign
-                 * contributor
-                 * refund
-                 */
                 if (args.length != 1) {
                     return "{\"Error\":\"Wrong arguments.\"}";
                 }
@@ -147,7 +114,6 @@ public class CrowdFunding extends ChaincodeBase {
         log.info("query, function:" + function);
         switch (function) {
             case "campaignInfo" :
-                // load from campaign data from chaincode
                 if (args.length == 1) {
                     log.info("CASE : campaignInfo, ID : " + args[0]);
                     CampaignHelper helper = new CampaignHelper();
@@ -168,11 +134,11 @@ public class CrowdFunding extends ChaincodeBase {
                     return String.valueOf(helper.get(stub, args[0]).getFundingAmount());
                 }
                 return "No data!";
-            case "campaignDetail" :
+            case "campaignFundingTotal" :
                 // TODO: more information
                 return stub.getState(CampaignHelper.TOTAL + ":" + args[0]);
-            case "contribute" :
-                // TODO: show campaign contibute detail
+            case "contributeStatus" :
+                // TODO: show campaign contibute detail, to JSON
                 return "";
             default:
                 log.error("No matching case for function:"+function);

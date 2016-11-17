@@ -2,7 +2,7 @@ package me.phyrextsai.hyperledger.crowdfunding.helper;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
-import me.phyrextsai.hyperledger.crowdfunding.interfaces.Table;
+import me.phyrextsai.hyperledger.crowdfunding.interfaces.TableEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hyperledger.java.shim.ChaincodeStub;
@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Created by phyrextsai on 2016/11/16.
  */
-public class ContributeHelper implements Table<Contribute> {
+public class ContributeHelper implements TableEntity<Contribute> {
     private static Log log = LogFactory.getLog(ContributeHelper.class);
 
     public final static String CONTRIBUTE = "Contribute";
@@ -119,16 +119,16 @@ public class ContributeHelper implements Table<Contribute> {
         return stub.deleteRow(CONTRIBUTE, keys);
     }
 
-    @Override
-    public Contribute parse(String[] args) {
-        if (args.length != 4) {
+    public Contribute parse(ChaincodeStub stub, String[] args) {
+        if (args.length != 3) {
             return null;
         }
+        CampaignHelper campaignHelper = new CampaignHelper();
         String contributeId = UUID.randomUUID().toString();
         String campaignId = args[0];
         String contributor = args[1];
-        String beneficiary = args[2];
-        Integer amount = Integer.parseInt(args[3]);
+        String beneficiary = campaignHelper.get(stub, campaignId).getOwner();
+        Integer amount = Integer.parseInt(args[2]);
         return new Contribute(contributeId, campaignId, contributor, beneficiary, amount, false);
     }
 
@@ -176,11 +176,16 @@ public class ContributeHelper implements Table<Contribute> {
                 TableProto.Column.newBuilder()
                         .setUint32(contribute.getAmount()).build();
 
+        TableProto.Column refund =
+                TableProto.Column.newBuilder()
+                        .setBool(contribute.isRefund()).build();
+
         cols.add(contributeId);
         cols.add(campaignId);
         cols.add(contributor);
         cols.add(beneficiary);
         cols.add(amount);
+        cols.add(refund);
 
         TableProto.Row row = TableProto.Row.newBuilder()
                 .addAllColumns(cols)
@@ -189,15 +194,9 @@ public class ContributeHelper implements Table<Contribute> {
         return row;
     }
 
-    public Contribute doContribute(String[] args) {
-        Contribute contribute = parse(args);
+    public Contribute doContribute(ChaincodeStub stub, String[] args) {
+        Contribute contribute = parse(stub, args);
         contribute.setRefund(false);
-        return contribute;
-    }
-
-    public Contribute doRefund(String[] args) {
-        Contribute contribute = parse(args);
-        contribute.setRefund(true);
         return contribute;
     }
 }
