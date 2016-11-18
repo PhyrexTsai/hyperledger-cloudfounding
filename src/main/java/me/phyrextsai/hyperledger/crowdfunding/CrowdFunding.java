@@ -64,7 +64,7 @@ public class CrowdFunding extends ChaincodeBase {
                                 + contribute.getAmount();
                         stub.putState(campaignHelper.getCampaignFundingTotalKey(contribute.getCampaignId()), String.valueOf(total));
 
-                        return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
+                        return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getContributeId() + ".\"}";
                     } else {
                         return "{\"Error\":\"Create Contribute failed.\"}";
                     }
@@ -88,7 +88,7 @@ public class CrowdFunding extends ChaincodeBase {
                                 - contribute.getAmount();
                         stub.putState(campaignHelper.getCampaignFundingTotalKey(contribute.getCampaignId()), String.valueOf(total));
 
-                        return "{\"Data\":\"Refund success, uuid : " + contribute.getCampaignId() + ".\"}";
+                        return "{\"Data\":\"Refund success, uuid : " + contribute.getContributeId() + ".\"}";
                     } else {
                         return "{\"Error\":\"Refund failed.\"}";
                     }
