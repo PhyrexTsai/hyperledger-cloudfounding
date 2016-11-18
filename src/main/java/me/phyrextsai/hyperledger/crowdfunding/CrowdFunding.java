@@ -41,6 +41,8 @@ public class CrowdFunding extends ChaincodeBase {
                     return "{\"Error\":\"Wrong arguments.\"}";
                 } else {
                     if (campaignHelper.insert(stub, campaign)) {
+                        log.info("Insert campaign total, Key : " + campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId()));
+                        stub.putState(campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId()), "0");
                         log.info("Insert record, CampaignId : " + campaign.getCampaignId());
                         return "{\"Data\":\"Create Campaign success, uuid : " + campaign.getCampaignId() + ".\"}";
                     } else {
@@ -57,11 +59,10 @@ public class CrowdFunding extends ChaincodeBase {
                     if (contributeHelper.insert(stub, contribute)) {
                         log.info("Insert record, ContributeId : " + contribute.getCampaignId());
 
-                        Integer total = 0;
-                        if (stub.getState(CampaignHelper.TOTAL + ":" + campaign.getCampaignId()) != null) {
-                            total += contribute.getAmount();
-                        }
-                        stub.putState(CampaignHelper.TOTAL + campaign.getCampaignId(), String.valueOf(total));
+                        Integer total =
+                                Integer.parseInt(stub.getState(campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId())))
+                                + contribute.getAmount();
+                        stub.putState(campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId()), String.valueOf(total));
 
                         return "{\"Data\":\"Create Contribute success, uuid : " + contribute.getCampaignId() + ".\"}";
                     } else {
@@ -82,8 +83,10 @@ public class CrowdFunding extends ChaincodeBase {
                     if (contributeHelper.update(stub, contribute)) {
                         log.info("Insert record, ContributeId : " + contribute.getCampaignId());
 
-                        Integer total = Integer.parseInt(stub.getState(CampaignHelper.TOTAL + ":" + campaign.getCampaignId())) - contribute.getAmount();
-                        stub.putState(CampaignHelper.TOTAL + campaign.getCampaignId(), String.valueOf(total));
+                        Integer total =
+                                Integer.parseInt(stub.getState(campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId())))
+                                - contribute.getAmount();
+                        stub.putState(campaignHelper.getCampaignFundingTotalKey(campaign.getCampaignId()), String.valueOf(total));
 
                         return "{\"Data\":\"Refund success, uuid : " + contribute.getCampaignId() + ".\"}";
                     } else {

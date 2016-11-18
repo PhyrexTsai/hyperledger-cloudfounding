@@ -188,4 +188,8 @@ public class CampaignHelper implements TableEntity<Campaign> {
 
         return row;
     }
+
+    public String getCampaignFundingTotalKey(String campaignId) {
+        return String.format("%s:%s", TOTAL, campaignId);
+    }
 }
