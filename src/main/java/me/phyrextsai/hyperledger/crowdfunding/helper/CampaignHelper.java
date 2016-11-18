@@ -136,7 +136,7 @@ public class CampaignHelper implements TableEntity<Campaign> {
     }
 
     public Campaign parse(String[] args) {
-        if (args.length != 3) {
+        if (args.length != 4) {
             return null;
         }
         try {
