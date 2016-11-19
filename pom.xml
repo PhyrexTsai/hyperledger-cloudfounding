@@ -91,5 +91,12 @@ g/maven-v4_0_0.xsd">
             <artifactId>shim-client</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.hyperledger.fabric-java-sdk</groupId>
+            <artifactId>fabric-java-sdk</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/fabric-java-sdk-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
