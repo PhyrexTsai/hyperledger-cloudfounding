@@ -1,4 +1,4 @@
-# hyperledger-crowdfounding
+# hyperledger-crowdfunding
 
 ## Docker images
 
@@ -17,7 +17,7 @@ cd {PATH}/hyperledger-docker
 
 ```
 cd /opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/java
-git clone https://github.com/PhyrexTsai/hyperledger-crowdfounding
+git clone https://github.com/PhyrexTsai/hyperledger-crowdfunding
 ```
 
 ## Build shim-client
@@ -30,7 +30,7 @@ cd /opt/gopath/src/github.com/hyperledger/fabric
 ## Run on docker
 
 ```
-cd {PATH}/hyperledger-crowdfounding
+cd {PATH}/hyperledger-crowdfunding
 gradle -b build.gradle clean
 gradle -b build.gradle build
 gradle -b build.gradle run
@@ -45,6 +45,8 @@ Xurw3yU9zI0l
 
 -- chaincode command
 peer chaincode deploy -u admin -l java -n CrowdFunding -c '{"Function":"init","Args":[]}'
-peer chaincode query -u admin -l java -n CrowdFunding -c '{"Function":"campaignInfo","Args":["14062405-8191-42e6-bc0b-a1cd7e829165"]}'
-peer chaincode invoke -u admin -l java -n CrowdFunding -c '{"Function":"campaign","Args":["wallet", "info", "100"]}'
+peer chaincode query -u admin -l java -n CrowdFunding -c '{"Function":"campaignInfo","Args":["63aa7418-9252-44cc-aa89-26827ff0f02f"]}'
+peer chaincode invoke -u admin -l java -n CrowdFunding -c '{"Function":"campaign","Args":["campaignOwner", "info", "10", "2016/12/15 00:00:00"]}'
+peer chaincode invoke -u admin -l java -n CrowdFunding -c '{"Function":"contribute","Args":["63aa7418-9252-44cc-aa89-26827ff0f02f", "mywalet", "1"]}'
+peer chaincode query -u admin -l java -n CrowdFunding -c '{"Function":"campaignFundingTotal","Args":["63aa7418-9252-44cc-aa89-26827ff0f02f"]}'
 ```
