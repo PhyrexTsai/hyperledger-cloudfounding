@@ -1,4 +1,4 @@
-# hyperledger-crowdfounding
+# hyperledger-crowdfunding
 
 ## Docker images
 
