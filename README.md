@@ -13,35 +13,11 @@ cd {PATH}/hyperledger-docker
 ./start.sh
 ```
 
-## Copy repo into Docker
-
-```
-cd /opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/java
-git clone https://github.com/PhyrexTsai/hyperledger-crowdfunding
-```
-
-## Build shim-client
-
-```
-cd /opt/gopath/src/github.com/hyperledger/fabric
-./core/chaincode/shim/java/javabuild.sh
-```
-
-## Run on docker
-
-```
-cd {PATH}/hyperledger-crowdfunding
-gradle -b build.gradle clean
-gradle -b build.gradle build
-gradle -b build.gradle run
-```
-
 ## Example
 
 ```
--- login
-peer network login admin 
-Xurw3yU9zI0l
+-- build 
+/bin/sh /scripts/javaenv.sh
 
 -- chaincode command
 peer chaincode deploy -u admin -l java -n CrowdFunding -c '{"Function":"init","Args":[]}'
