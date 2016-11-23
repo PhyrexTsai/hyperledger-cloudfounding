@@ -4,8 +4,8 @@ import me.phyrextsai.hyperledger.crowdfunding.data.Campaign;
 import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
 import me.phyrextsai.hyperledger.crowdfunding.helper.CampaignHelper;
 import me.phyrextsai.hyperledger.crowdfunding.helper.ContributeHelper;
-import org.hyperledger.fabric.sdk.shim.ChaincodeBase;
-import org.hyperledger.fabric.sdk.shim.ChaincodeStub;
+import org.hyperledger.java.shim.ChaincodeBase;
+import org.hyperledger.java.shim.ChaincodeStub;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

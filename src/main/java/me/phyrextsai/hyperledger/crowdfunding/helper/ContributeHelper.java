@@ -5,7 +5,7 @@ import me.phyrextsai.hyperledger.crowdfunding.data.Contribute;
 import me.phyrextsai.hyperledger.crowdfunding.interfaces.TableEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hyperledger.fabric.sdk.shim.ChaincodeStub;
+import org.hyperledger.java.shim.ChaincodeStub;
 import org.hyperledger.protos.TableProto;
 
 import java.util.ArrayList;

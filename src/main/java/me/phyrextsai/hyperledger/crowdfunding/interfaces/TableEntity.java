@@ -1,6 +1,6 @@
 package me.phyrextsai.hyperledger.crowdfunding.interfaces;
 
-import org.hyperledger.fabric.sdk.shim.ChaincodeStub;
+import org.hyperledger.java.shim.ChaincodeStub;
 import org.hyperledger.protos.TableProto;
 
 /**
