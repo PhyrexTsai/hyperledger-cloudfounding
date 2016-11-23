@@ -13,10 +13,17 @@ cd {PATH}/hyperledger-docker
 ./start.sh
 ```
 
+## Get into Docker instance
+
+```
+-- run on localhost to get into docker instance
+bash -c "clear && docker exec -it dockerhyperledger_vp0_1 sh"
+```
+
 ## Example
 
 ```
--- build 
+-- build java environment inside docker
 /bin/sh /scripts/javaenv.sh
 
 -- chaincode command
